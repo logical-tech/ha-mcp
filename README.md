@@ -10,9 +10,8 @@ MCP server per Home Assistant, installabile come app (add-on) di HA. Un solo fil
 
 ## Installazione come app su HA
 
-1. Copia la cartella `ha_mcp/` in `/addons/ha_mcp/` su HA (Samba o SSH),
-   oppure pubblica questo repo su GitHub e aggiungilo da **Impostazioni → App → Store → ⋮ → Repository**.
-2. **Store → ⋮ → Controlla aggiornamenti** → compare "HA MCP" tra le app locali → Installa.
+1. **Impostazioni → App → Store → ⋮ → Repository** → aggiungi `https://github.com/logical-tech/ha-mcp`.
+2. Ricarica lo Store → "HA MCP" → Installa.
 3. Configurazione → `secret`: una stringa casuale di almeno 32 caratteri:
    ```bash
    python3 -c "import secrets;print(secrets.token_urlsafe(32))"
