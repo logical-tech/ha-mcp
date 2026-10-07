@@ -1,0 +1,14 @@
+name: HA MCP
+version: "0.1.0"
+slug: ha_mcp
+description: MCP server per controllare e configurare Home Assistant da Claude
+arch: [aarch64, amd64]
+homeassistant_api: true
+hassio_api: true
+hassio_role: admin
+ports:
+  8099/tcp: 8099
+options:
+  secret: ""
+schema:
+  secret: password
