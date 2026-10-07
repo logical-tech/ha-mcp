@@ -67,9 +67,20 @@ async def ha_rest(method: str, path: str, body: dict | list | None = None) -> st
       POST /api/states/<entity_id>  body: {"state": "...", "attributes": {}}
       GET/POST/DELETE /api/config/automation/config/<id>  (automation YAML-as-JSON; reload automation after)
       GET/POST/DELETE /api/config/script/config/<id>, /api/config/scene/config/<id>
-      POST /api/config/core/check_config"""
-    async with httpx.AsyncClient(timeout=60) as c:
-        r = await c.request(method.upper(), f"{URL}{path}", headers=HEADERS, json=body)
+      POST /api/config/core/check_config
+    Supervisor API (HA app mode only): prefix the path with /supervisor, e.g.
+      GET  /supervisor/addons, /supervisor/addons/<slug>/info, /supervisor/store, /supervisor/backups
+      POST /supervisor/store/repositories {"repository": "<git url>"}, /supervisor/store/reload
+      POST /supervisor/store/addons/<slug>/install, /supervisor/addons/<slug>/uninstall|start|stop|restart|update
+      POST /supervisor/addons/<slug>/options {"auto_update": true}, /supervisor/backups/new/partial {"name", "addons": [...]}"""
+    if path.startswith("/supervisor/"):
+        if not os.environ.get("SUPERVISOR_TOKEN"):
+            raise ToolError("Supervisor API is only reachable when running as an HA app")
+        url = "http://supervisor" + path.removeprefix("/supervisor")
+    else:
+        url = URL + path
+    async with httpx.AsyncClient(timeout=300) as c:  # installs/backups can be slow
+        r = await c.request(method.upper(), url, headers=HEADERS, json=body)
     return f"{r.status_code}\n{r.text}"
 
 
